@@ -7,7 +7,7 @@ import {
   Session,
   User,
 } from "@repo/database";
-import { consumeChallengeOnce, generateOpaqueToken, hashToken, refresh, register } from "@repo/auth";
+import { consumeChallengeOnce, generateOpaqueToken, hashToken, refresh, register } from "@repo/services";
 import { resetTestDb, startTestDb, stopTestDb } from "../helpers/db";
 
 describe("persistence", () => {

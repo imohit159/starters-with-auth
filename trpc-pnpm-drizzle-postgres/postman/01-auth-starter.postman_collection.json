@@ -1,0 +1,53 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-ab12-authstartertrpc",
+    "name": "01 Auth Starter tRPC",
+    "description": "Health and Google OAuth HTTP routes. tRPC procedures are covered by `pnpm test` in apps/api; Postman is a poor fit for batched tRPC envelopes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "webOrigin", "value": "http://localhost:3000" }
+  ],
+  "item": [
+    {
+      "name": "01 Health",
+      "item": [
+        {
+          "name": "01 Get health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('reports ok', () => pm.expect(pm.response.json().status).to.eql('ok'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Google OAuth HTTP",
+      "item": [
+        {
+          "name": "01 Start Google OAuth",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/auth/google",
+            "description": "Browser redirect to Google. Authorized redirect URI must be {{baseUrl}}/api/v1/auth/google/callback."
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -10,7 +10,8 @@ Use **pnpm** only.
 |---|---|
 | `modular-monolith` | Express 5 + Next.js, independent apps, MongoDB, custom JWT cookies |
 | `modular-monolith-pnpm-workspace` | Same architecture with a pnpm workspace + Turborepo |
-| `trpc-pnpm-workspace` | pnpm workspace + Turborepo + tRPC |
+| `trpc-pnpm-workspace` | pnpm workspace + Turborepo + tRPC + MongoDB |
+| `trpc-pnpm-drizzle-postgres` | pnpm workspace + Turborepo + tRPC + PostgreSQL + Drizzle |
 
 Each folder is a complete starter, not its own git repository.
 

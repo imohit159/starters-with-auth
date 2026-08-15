@@ -1,14 +1,14 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import request from "supertest";
 import { AuthChallenge } from "@repo/database";
-import { hashToken } from "@repo/auth";
-import { COOKIE } from "@repo/trpc";
+import { hashToken } from "@repo/services";
+import { COOKIE } from "@repo/trpc/server";
 import { createApp } from "../../src/app";
 import { resetTestDb, startTestDb, stopTestDb } from "../helpers/db";
 
-vi.mock("../../../../packages/services/auth/src/google-oauth-client", async (importOriginal) => {
+vi.mock("../../../../packages/services/src/clients/google-oauth-client", async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import("../../../../packages/services/auth/src/google-oauth-client")>();
+    await importOriginal<typeof import("../../../../packages/services/src/clients/google-oauth-client")>();
   return {
     ...actual,
     getGoogleOAuthClient: () => ({
