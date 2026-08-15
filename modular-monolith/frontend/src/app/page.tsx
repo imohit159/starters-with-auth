@@ -7,12 +7,12 @@ export default function HomePage() {
     <main className="flex min-h-svh flex-col items-center justify-center gap-6 px-6">
       <div className="max-w-md text-center">
         <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase">
-          Modular monolith
+          Independent apps
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight">Auth starter</h1>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight">Modular monolith</h1>
         <p className="mt-3 text-muted-foreground">
-          Email/password and Google OAuth, wired from Express to Next.js. Use this as the auth
-          foundation for the next product.
+          Express 5 API and Next.js as separate packages. Email/password and Google OAuth with
+          httpOnly JWT cookies. No workspace — install and run each app on its own.
         </p>
       </div>
       <div className="flex gap-3">

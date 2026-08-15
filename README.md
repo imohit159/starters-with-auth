@@ -8,9 +8,9 @@ Use **pnpm** only.
 
 | Folder | Stack |
 |---|---|
-| `modular monolith` | Express 5 + Next.js, independent apps, MongoDB, custom JWT cookies |
-| `modular monolith with pnpm workspace` | Same architecture with a pnpm workspace |
-| `pnpm workspace with trpc` | pnpm workspace + tRPC |
+| `modular-monolith` | Express 5 + Next.js, independent apps, MongoDB, custom JWT cookies |
+| `modular-monolith-pnpm-workspace` | Same architecture with a pnpm workspace + Turborepo |
+| `trpc-pnpm-workspace` | pnpm workspace + Turborepo + tRPC |
 
 Each folder is a complete starter, not its own git repository.
 
@@ -18,7 +18,7 @@ Each folder is a complete starter, not its own git repository.
 
 ```bash
 git clone <this-repo>
-cp -R "modular monolith" ../my-app
+cp -R trpc-pnpm-workspace ../my-app
 cd ../my-app
 ```
 

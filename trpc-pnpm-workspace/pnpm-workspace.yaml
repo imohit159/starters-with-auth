@@ -1,0 +1,11 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "packages/services/*"
+
+allowBuilds:
+  argon2: true
+  esbuild: true
+  mongodb-memory-server: true
+  sharp: false
+  unrs-resolver: false

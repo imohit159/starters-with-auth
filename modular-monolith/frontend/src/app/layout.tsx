@@ -16,13 +16,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Auth Starter",
-  description: "Modular monolith authentication starter",
+  title: "Modular monolith auth starter",
+  description: "Express 5 + Next.js independent apps, MongoDB, custom JWT cookies",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
       <body className="min-h-full flex flex-col">
         <AppThemeProvider>
           <QueryProvider>
