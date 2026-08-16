@@ -10,6 +10,8 @@ Folder names are `{transport}-{layout}-{orm?}-{db}`:
 - **layout:** `apps` (independent `backend/` + `frontend/`) or `workspace` (pnpm + Turborepo)
 - **orm/db:** `mongo` (Mongoose) or `drizzle-postgres`
 
+The single-app Next.js modular monolith uses the explicit name `next-fullstack-drizzle-postgres`.
+
 ## Starters
 
 | Folder | Transport | Layout | Persistence |
@@ -20,6 +22,7 @@ Folder names are `{transport}-{layout}-{orm?}-{db}`:
 | [`rest-workspace-drizzle-postgres`](rest-workspace-drizzle-postgres) | REST | pnpm workspace | PostgreSQL + Drizzle |
 | [`trpc-workspace-mongo`](trpc-workspace-mongo) | tRPC | pnpm workspace | MongoDB + Mongoose |
 | [`trpc-workspace-drizzle-postgres`](trpc-workspace-drizzle-postgres) | tRPC | pnpm workspace | PostgreSQL + Drizzle |
+| [`next-fullstack-drizzle-postgres`](next-fullstack-drizzle-postgres) | Next.js Route Handlers | Single full-stack app | PostgreSQL + Drizzle |
 | [`saas-trpc-workspace-drizzle-postgres`](saas-trpc-workspace-drizzle-postgres) | tRPC | pnpm workspace | PostgreSQL + Drizzle (SaaS: orgs + Stripe) |
 
 SaaS variants (same product: orgs, memberships, Stripe, org-scoped todos) live under [`saas-kits/`](saas-kits):
