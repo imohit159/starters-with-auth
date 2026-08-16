@@ -1,0 +1,32 @@
+{
+  "name": "@repo/trpc",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/server/index.ts",
+    "./server": "./src/server/index.ts",
+    "./client": "./src/client/index.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/logger": "workspace:*",
+    "@repo/services": "workspace:*",
+    "@trpc/client": "^11.8.1",
+    "@trpc/react-query": "^11.8.1",
+    "@trpc/server": "^11.8.1",
+    "express": "^5.2.1",
+    "react": "19.2.8",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19",
+    "typescript": "^5.9.2"
+  }
+}

@@ -1,0 +1,521 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-ab12-authstarter0001",
+    "name": "01 SaaS REST Starter",
+    "description": "SaaS JSON REST API: auth, organizations, Stripe billing, todos, platform admin.\n\nImport this collection and `02-local.postman_environment.json`.\nCookies (`access_token`, `refresh_token`) are set by register/login/refresh. Keep the same Postman domain so later requests send them automatically.\n\nEmail verify and password reset tokens are logged by the API in development (no SMTP). Paste them into collection variables before those requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "webOrigin", "value": "http://localhost:3000" },
+    { "key": "email", "value": "ada@example.com" },
+    { "key": "password", "value": "password12" },
+    { "key": "displayName", "value": "Ada" },
+    { "key": "verifyToken", "value": "" },
+    { "key": "resetToken", "value": "" },
+    { "key": "googleCode", "value": "" },
+    { "key": "googleState", "value": "" },
+    { "key": "organizationId", "value": "" },
+    { "key": "inviteToken", "value": "" },
+    { "key": "todoId", "value": "" },
+    { "key": "userId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "01 Health",
+      "item": [
+        {
+          "name": "01 Get health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('reports ok', () => pm.expect(pm.response.json().status).to.eql('ok'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Auth",
+      "item": [
+        {
+          "name": "01 Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('created or conflict', () => pm.expect([201, 409]).to.include(pm.response.code));",
+                  "if (pm.response.code === 201) {",
+                  "  pm.test('returns user email', () => pm.expect(pm.response.json().user.email).to.eql(pm.collectionVariables.get('email')));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"displayName\": \"{{displayName}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/register",
+            "description": "Creates a User + password identity. Sets access_token and refresh_token cookies unless REQUIRE_EMAIL_VERIFICATION=true."
+          }
+        },
+        {
+          "name": "02 Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('returns user', () => pm.expect(pm.response.json().user.email).to.be.a('string'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/login",
+            "description": "Argon2 verify. Issues a new refresh session family and cookies."
+          }
+        },
+        {
+          "name": "03 Refresh",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/auth/refresh",
+            "description": "Requires refresh_token cookie. Rotates the session in the same family. Replaying the previous refresh token revokes the family (401)."
+          }
+        },
+        {
+          "name": "04 Forgot password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/forgot-password",
+            "description": "Always 200. In dev the reset URL is logged. Copy the token query param into collection variable resetToken."
+          }
+        },
+        {
+          "name": "05 Reset password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200 or invalid token', () => pm.expect([200, 400]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/reset-password",
+            "description": "Consume-once. Set resetToken from the mail log. Revokes all sessions for that user."
+          }
+        },
+        {
+          "name": "06 Verify email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200 or invalid token', () => pm.expect([200, 400]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{verifyToken}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/verify-email",
+            "description": "Consume-once. Set verifyToken from the mail log after register."
+          }
+        },
+        {
+          "name": "07 Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/auth/logout",
+            "description": "Revokes the current refresh session and clears cookies."
+          }
+        },
+        {
+          "name": "08 Google start",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/auth/google",
+            "description": "302 to Google. Disable 'Automatically follow redirects' if you need to copy `state` from Location. Open in a browser for a real login. 503 if Google env is empty."
+          }
+        },
+        {
+          "name": "09 Google callback",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/auth/google/callback?code={{googleCode}}&state={{googleState}}",
+            "description": "Used by Google's redirect. For manual tests, paste code and state. Success redirects to {{webOrigin}}/auth/callback and sets cookies."
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Users",
+      "item": [
+        {
+          "name": "01 Get me",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200 or 401', () => pm.expect([200, 401]).to.include(pm.response.code));",
+                  "if (pm.response.code === 200) {",
+                  "  pm.test('returns id', () => pm.expect(pm.response.json().user.id).to.be.a('string'));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/users/me",
+            "description": "Requires access_token cookie (or Authorization: Bearer). Run after login/register."
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 Orgs",
+      "item": [
+        {
+          "name": "01 Create org",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('created', () => pm.expect([201, 401]).to.include(pm.response.code));",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('organizationId', pm.response.json().organization.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ada Labs\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/orgs",
+            "description": "Creates an organization and makes the caller owner. Saves organizationId."
+          }
+        },
+        {
+          "name": "02 List orgs",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/orgs"
+          }
+        },
+        {
+          "name": "03 Get org",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/orgs/{{organizationId}}"
+          }
+        },
+        {
+          "name": "04 List members",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/orgs/{{organizationId}}/members"
+          }
+        },
+        {
+          "name": "05 Invite member",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"gus@example.com\",\n  \"role\": \"member\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/orgs/{{organizationId}}/invites",
+            "description": "Owner/admin. Invite token is emailed, not returned."
+          }
+        },
+        {
+          "name": "06 Accept invite",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{inviteToken}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/orgs/invites/accept",
+            "description": "Must be signed in as the invited email. Paste inviteToken from the mail log."
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Billing",
+      "item": [
+        {
+          "name": "01 Get subscription",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/orgs/{{organizationId}}/billing"
+          }
+        },
+        {
+          "name": "02 Create checkout session",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/orgs/{{organizationId}}/billing/checkout",
+            "description": "Owner/admin. Returns a Stripe Checkout URL. Entitlement is applied by the webhook, not this response."
+          }
+        },
+        {
+          "name": "03 Create portal session",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/orgs/{{organizationId}}/billing/portal"
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 Todos",
+      "item": [
+        {
+          "name": "01 List todos",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/orgs/{{organizationId}}/todos"
+          }
+        },
+        {
+          "name": "02 Create todo",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Ship it\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/orgs/{{organizationId}}/todos",
+            "description": "Requires an active or trialing org subscription. Otherwise 402 SUBSCRIPTION_REQUIRED."
+          }
+        },
+        {
+          "name": "03 Toggle todo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/orgs/{{organizationId}}/todos/{{todoId}}"
+          }
+        },
+        {
+          "name": "04 Delete todo",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/orgs/{{organizationId}}/todos/{{todoId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 Admin",
+      "item": [
+        {
+          "name": "01 Search users",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/admin/users?email={{email}}",
+            "description": "Platform admin only. Promote with UPDATE users SET roles = ARRAY['user','admin'] WHERE email = '...'"
+          }
+        },
+        {
+          "name": "02 Get user",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/admin/users/{{userId}}"
+          }
+        },
+        {
+          "name": "03 Grant access",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"days\": 30\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/admin/orgs/{{organizationId}}/grant"
+          }
+        },
+        {
+          "name": "04 Revoke access",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/admin/orgs/{{organizationId}}/revoke"
+          }
+        }
+      ]
+    }
+  ]
+}
