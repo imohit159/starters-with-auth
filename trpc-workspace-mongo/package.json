@@ -1,5 +1,5 @@
 {
-  "name": "trpc-pnpm-workspace",
+  "name": "trpc-workspace-mongo",
   "private": true,
   "scripts": {
     "build": "turbo run build",

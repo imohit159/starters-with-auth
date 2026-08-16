@@ -1,4 +1,4 @@
-# Modular monolith auth starter
+# rest-apps-mongo
 
 Auth-only starter: Express 5 API + Next.js App Router. Email/password and Google OAuth, access + rotating refresh cookies, MongoDB/Mongoose. No workspace, no extra domain features.
 

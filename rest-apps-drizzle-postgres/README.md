@@ -1,4 +1,4 @@
-# Modular monolith auth starter (Drizzle + Postgres)
+# rest-apps-drizzle-postgres
 
 Auth-only starter: Express 5 API + Next.js App Router. Email/password and Google OAuth, access + rotating refresh cookies, PostgreSQL + Drizzle ORM. JSON REST (not tRPC). No workspace, no extra domain features.
 

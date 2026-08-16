@@ -1,6 +1,6 @@
-# Modular monolith auth starter (pnpm workspace)
+# rest-workspace-mongo
 
-Auth-only starter: Express 5 API + Next.js App Router in a pnpm workspace, orchestrated by Turborepo. Email/password and Google OAuth, access + rotating refresh cookies, MongoDB/Mongoose. Same auth architecture as `modular-monolith`; the difference is one lockfile and `turbo run`.
+Auth-only starter: Express 5 API + Next.js App Router in a pnpm workspace, orchestrated by Turborepo. Email/password and Google OAuth, access + rotating refresh cookies, MongoDB/Mongoose. Same auth architecture as `rest-apps-mongo`; the difference is one lockfile and `turbo run`.
 
 Use **pnpm** only. Never npm or yarn.
 

@@ -1,5 +1,5 @@
 {
-  "name": "modular-monolith-pnpm-workspace",
+  "name": "rest-workspace-mongo",
   "private": true,
   "scripts": {
     "build": "turbo run build",

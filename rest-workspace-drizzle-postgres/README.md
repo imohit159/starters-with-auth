@@ -1,6 +1,6 @@
-# Modular monolith auth starter (pnpm workspace + Drizzle/Postgres)
+# rest-workspace-drizzle-postgres
 
-Auth-only starter: Express 5 API + Next.js App Router in a pnpm workspace, orchestrated by Turborepo. JSON REST (not tRPC). Email/password and Google OAuth, access + rotating refresh cookies, PostgreSQL + Drizzle ORM. Same auth architecture as `modular-monolith-pnpm-workspace`; the difference is Postgres/Drizzle instead of MongoDB/Mongoose, plus shared `packages/database` and `packages/services`.
+Auth-only starter: Express 5 API + Next.js App Router in a pnpm workspace, orchestrated by Turborepo. JSON REST (not tRPC). Email/password and Google OAuth, access + rotating refresh cookies, PostgreSQL + Drizzle ORM. Same auth architecture as `rest-workspace-mongo`; the difference is Postgres/Drizzle instead of MongoDB/Mongoose, plus shared `packages/database` and `packages/services`.
 
 Use **pnpm** only. Never npm or yarn.
 

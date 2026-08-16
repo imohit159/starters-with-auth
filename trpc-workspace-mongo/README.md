@@ -1,4 +1,4 @@
-# Modular monolith auth starter (pnpm workspace + tRPC)
+# trpc-workspace-mongo
 
 Auth-only starter: Express 5 API + Next.js App Router in a pnpm workspace, orchestrated by Turborepo. JSON REST is replaced by tRPC. Email/password and Google OAuth, access + rotating refresh cookies, MongoDB/Mongoose. Google OAuth start/callback stay HTTP because they are browser redirects.
 

@@ -1,5 +1,5 @@
 {
-  "name": "trpc-pnpm-drizzle-postgres",
+  "name": "trpc-workspace-drizzle-postgres",
   "private": true,
   "scripts": {
     "build": "turbo run build",
