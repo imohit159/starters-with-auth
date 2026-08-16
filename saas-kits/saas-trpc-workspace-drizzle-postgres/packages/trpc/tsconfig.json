@@ -1,0 +1,8 @@
+{
+  "extends": "@repo/typescript-config/node-package.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "types": ["node", "react"]
+  },
+  "include": ["src"]
+}

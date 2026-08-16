@@ -1,0 +1,26 @@
+{
+  "name": "saas-trpc-workspace-drizzle-postgres",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "dev:api": "turbo run dev --filter=api",
+    "dev:web": "turbo run dev --filter=web",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types",
+    "test": "turbo run test",
+    "db:generate": "pnpm --filter @repo/database generate",
+    "db:migrate": "pnpm --filter @repo/database migrate",
+    "db:studio": "pnpm --filter @repo/database studio"
+  },
+  "devDependencies": {
+    "prettier": "^3.7.4",
+    "turbo": "^2.10.10",
+    "typescript": "5.9.2"
+  },
+  "packageManager": "pnpm@11.5.2",
+  "engines": {
+    "node": ">=20"
+  }
+}

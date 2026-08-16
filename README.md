@@ -20,8 +20,9 @@ Folder names are `{transport}-{layout}-{orm?}-{db}`:
 | [`rest-workspace-drizzle-postgres`](rest-workspace-drizzle-postgres) | REST | pnpm workspace | PostgreSQL + Drizzle |
 | [`trpc-workspace-mongo`](trpc-workspace-mongo) | tRPC | pnpm workspace | MongoDB + Mongoose |
 | [`trpc-workspace-drizzle-postgres`](trpc-workspace-drizzle-postgres) | tRPC | pnpm workspace | PostgreSQL + Drizzle |
+| [`saas-trpc-workspace-drizzle-postgres`](saas-trpc-workspace-drizzle-postgres) | tRPC | pnpm workspace | PostgreSQL + Drizzle (SaaS: orgs + Stripe) |
 
-Each folder is a complete starter, not its own git repository. Auth product is the same in every kit: email/password + Google OAuth, httpOnly access + rotating refresh cookies.
+Each folder is a complete starter, not its own git repository. Auth product is the same in every kit: email/password + Google OAuth, httpOnly access + rotating refresh cookies. [`saas-trpc-workspace-drizzle-postgres`](saas-trpc-workspace-drizzle-postgres) adds organizations, memberships, and Stripe billing on that auth base.
 
 ## Use a starter
 
