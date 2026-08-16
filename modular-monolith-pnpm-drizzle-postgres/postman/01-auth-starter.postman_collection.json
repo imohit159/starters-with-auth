@@ -1,0 +1,282 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-ab12-authstarter0001",
+    "name": "01 Auth Starter",
+    "description": "Modular monolith auth API.\n\nImport this collection and `02-local.postman_environment.json`.\nCookies (`access_token`, `refresh_token`) are set by register/login/refresh. Keep the same Postman domain so later requests send them automatically.\n\nEmail verify and password reset tokens are logged by the API in development (no SMTP). Paste them into collection variables before those requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "webOrigin", "value": "http://localhost:3000" },
+    { "key": "email", "value": "ada@example.com" },
+    { "key": "password", "value": "password12" },
+    { "key": "displayName", "value": "Ada" },
+    { "key": "verifyToken", "value": "" },
+    { "key": "resetToken", "value": "" },
+    { "key": "googleCode", "value": "" },
+    { "key": "googleState", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "01 Health",
+      "item": [
+        {
+          "name": "01 Get health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('reports ok', () => pm.expect(pm.response.json().status).to.eql('ok'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Auth",
+      "item": [
+        {
+          "name": "01 Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('created or conflict', () => pm.expect([201, 409]).to.include(pm.response.code));",
+                  "if (pm.response.code === 201) {",
+                  "  pm.test('returns user email', () => pm.expect(pm.response.json().user.email).to.eql(pm.collectionVariables.get('email')));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"displayName\": \"{{displayName}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/register",
+            "description": "Creates a User + password identity. Sets access_token and refresh_token cookies unless REQUIRE_EMAIL_VERIFICATION=true."
+          }
+        },
+        {
+          "name": "02 Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('returns user', () => pm.expect(pm.response.json().user.email).to.be.a('string'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/login",
+            "description": "Argon2 verify. Issues a new refresh session family and cookies."
+          }
+        },
+        {
+          "name": "03 Refresh",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/auth/refresh",
+            "description": "Requires refresh_token cookie. Rotates the session in the same family. Replaying the previous refresh token revokes the family (401)."
+          }
+        },
+        {
+          "name": "04 Forgot password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/forgot-password",
+            "description": "Always 200. In dev the reset URL is logged. Copy the token query param into collection variable resetToken."
+          }
+        },
+        {
+          "name": "05 Reset password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200 or invalid token', () => pm.expect([200, 400]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/reset-password",
+            "description": "Consume-once. Set resetToken from the mail log. Revokes all sessions for that user."
+          }
+        },
+        {
+          "name": "06 Verify email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200 or invalid token', () => pm.expect([200, 400]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{verifyToken}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/verify-email",
+            "description": "Consume-once. Set verifyToken from the mail log after register."
+          }
+        },
+        {
+          "name": "07 Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/auth/logout",
+            "description": "Revokes the current refresh session and clears cookies."
+          }
+        },
+        {
+          "name": "08 Google start",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/auth/google",
+            "description": "302 to Google. Disable 'Automatically follow redirects' if you need to copy `state` from Location. Open in a browser for a real login. 503 if Google env is empty."
+          }
+        },
+        {
+          "name": "09 Google callback",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/auth/google/callback?code={{googleCode}}&state={{googleState}}",
+            "description": "Used by Google's redirect. For manual tests, paste code and state. Success redirects to {{webOrigin}}/auth/callback and sets cookies."
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Users",
+      "item": [
+        {
+          "name": "01 Get me",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200 or 401', () => pm.expect([200, 401]).to.include(pm.response.code));",
+                  "if (pm.response.code === 200) {",
+                  "  pm.test('returns id', () => pm.expect(pm.response.json().user.id).to.be.a('string'));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Origin", "value": "{{webOrigin}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/users/me",
+            "description": "Requires access_token cookie (or Authorization: Bearer). Run after login/register."
+          }
+        }
+      ]
+    }
+  ]
+}

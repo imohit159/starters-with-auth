@@ -9,7 +9,9 @@ Use **pnpm** only.
 | Folder | Stack |
 |---|---|
 | `modular-monolith` | Express 5 + Next.js, independent apps, MongoDB, custom JWT cookies |
+| `modular-monolith-drizzle-postgres` | Same REST apps with PostgreSQL + Drizzle instead of MongoDB |
 | `modular-monolith-pnpm-workspace` | Same architecture with a pnpm workspace + Turborepo |
+| `modular-monolith-pnpm-drizzle-postgres` | Same REST workspace with PostgreSQL + Drizzle |
 | `trpc-pnpm-workspace` | pnpm workspace + Turborepo + tRPC + MongoDB |
 | `trpc-pnpm-drizzle-postgres` | pnpm workspace + Turborepo + tRPC + PostgreSQL + Drizzle |
 

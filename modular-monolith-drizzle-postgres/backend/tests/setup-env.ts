@@ -1,0 +1,14 @@
+process.env.NODE_ENV = "test";
+process.env.PORT = "4000";
+process.env.DATABASE_URL = "postgres://postgres:postgres@127.0.0.1:5432/auth_starter_test";
+process.env.ACCESS_TOKEN_SECRET = "test-access-secret-at-least-32-chars-long";
+process.env.ACCESS_TOKEN_EXPIRES_IN = "15m";
+process.env.REFRESH_TOKEN_EXPIRES_DAYS = "7";
+process.env.WEB_ORIGIN = "http://localhost:3000";
+process.env.API_ORIGIN = "http://localhost:4000";
+process.env.COOKIE_SAMESITE = "lax";
+process.env.REQUIRE_EMAIL_VERIFICATION = "false";
+process.env.GOOGLE_CLIENT_ID = "test-google-client-id";
+process.env.GOOGLE_CLIENT_SECRET = "test-google-client-secret";
+process.env.GOOGLE_REDIRECT_URI = "http://localhost:4000/api/v1/auth/google/callback";
+process.env.MAIL_FROM = "noreply@test.local";

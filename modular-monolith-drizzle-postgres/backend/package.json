@@ -1,0 +1,52 @@
+{
+  "name": "auth-starter-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.5.2",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc --noEmit",
+    "check-types": "tsc --noEmit",
+    "start": "tsx src/server.ts",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:watch": "vitest",
+    "db:generate": "drizzle-kit generate --config src/database/drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config src/database/drizzle.config.ts",
+    "db:studio": "drizzle-kit studio --config src/database/drizzle.config.ts"
+  },
+  "dependencies": {
+    "argon2": "^0.45.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.44.6",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.6.2",
+    "google-auth-library": "^11.0.2",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^9.0.5",
+    "postgres": "^3.4.7",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@testcontainers/postgresql": "^11.8.1",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^26.2.0",
+    "@types/nodemailer": "^8.0.1",
+    "@types/supertest": "^7.2.1",
+    "drizzle-kit": "^0.31.6",
+    "supertest": "^7.2.2",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.2",
+    "vitest": "^4.1.10"
+  }
+}
