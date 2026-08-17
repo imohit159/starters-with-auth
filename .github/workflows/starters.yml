@@ -1,0 +1,103 @@
+name: starters
+
+# Verifies only the starter kits touched by a change. Each starter root is
+# discovered from its own pnpm-lock.yaml, so adding a kit needs no edit here.
+#
+# lint / check-types / test run everywhere they exist. `build` is opt-in per
+# kit via a committed ci.env file, because Next.js builds import the Zod env
+# schema and would fail on missing variables rather than on real breakage.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      run_all:
+        description: Verify every starter, ignoring the diff
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      roots: ${{ steps.select.outputs.roots }}
+      any: ${{ steps.select.outputs.any }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history so the base..head diff resolves on pull requests.
+          fetch-depth: 0
+
+      - id: select
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          RUN_ALL: ${{ github.event_name == 'workflow_dispatch' && inputs.run_all || '' }}
+        run: |
+          roots="$(bash .github/scripts/changed-starters.sh)"
+          echo "roots=${roots}" >> "$GITHUB_OUTPUT"
+          if [[ "${roots}" == "[]" ]]; then
+            echo "any=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "any=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "### Verifying" >> "$GITHUB_STEP_SUMMARY"
+          jq -r '.[] | "- `\(.)`"' <<<"${roots}" >> "$GITHUB_STEP_SUMMARY"
+
+  verify:
+    needs: discover
+    if: needs.discover.outputs.any == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      # One broken kit must not cancel the others; the point is knowing which.
+      fail-fast: false
+      matrix:
+        root: ${{ fromJSON(needs.discover.outputs.roots) }}
+    name: ${{ matrix.root }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.root }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: ${{ matrix.root }}/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: bash "$GITHUB_WORKSPACE/.github/scripts/run-if-present.sh" lint
+
+      - name: Types
+        run: bash "$GITHUB_WORKSPACE/.github/scripts/run-if-present.sh" check-types
+
+      # Docker is present on the runner, so the testcontainers Postgres and
+      # Mongo suites actually execute here instead of self-skipping.
+      - name: Test
+        run: bash "$GITHUB_WORKSPACE/.github/scripts/run-if-present.sh" test
+
+      - name: Build
+        run: |
+          if [[ -f ci.env ]]; then
+            set -a
+            # shellcheck disable=SC1091
+            source ci.env
+            set +a
+            bash "$GITHUB_WORKSPACE/.github/scripts/run-if-present.sh" build
+          else
+            echo "no ci.env in ${{ matrix.root }} - build skipped"
+            echo "add one with throwaway values to enable it"
+          fi
