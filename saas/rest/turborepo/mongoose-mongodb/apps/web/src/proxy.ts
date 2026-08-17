@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { COOKIE, ROUTES } from "@/constants/api";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const refresh = request.cookies.get(COOKIE.refresh);
   if (refresh) {
     return NextResponse.next();

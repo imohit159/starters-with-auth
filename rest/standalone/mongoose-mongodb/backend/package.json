@@ -10,8 +10,10 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc --noEmit",
+    "check-types": "tsc --noEmit",
     "start": "tsx src/server.ts",
     "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
     "test:watch": "vitest"
   },
   "dependencies": {
