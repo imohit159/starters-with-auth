@@ -1,8 +1,7 @@
 name: starters
 
-# Verifies only the REST starter kits touched by a change. Each REST starter
-# root is discovered from its own pnpm-lock.yaml, so adding a REST kit needs no
-# edit here. Other starter families will be enabled after REST is stable.
+# Verifies only the starter kits touched by a change. Each starter root is
+# discovered from its own pnpm-lock.yaml, so adding a kit needs no edit here.
 #
 # lint / check-types / test run everywhere they exist. `build` is opt-in per
 # kit via a committed ci.env file, because Next.js builds import the Zod env
