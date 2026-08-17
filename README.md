@@ -1,48 +1,69 @@
 # starters-with-auth
 
-Catalog of full-stack auth starter kits. One GitHub repo, one clone, multiple starter folders. Copy the folder that matches the stack you want.
+Catalog of full-stack authentication starter kits. One repository, one clone, and multiple independently usable starters. Copy the leaf folder that matches the stack you want.
 
 Use **pnpm** only.
 
-Folder names are `{transport}-{layout}-{orm?}-{db}`:
+## Naming convention
 
-- **transport:** `rest` (JSON HTTP) or `trpc`
-- **layout:** `apps` (independent `backend/` + `frontend/`) or `workspace` (pnpm + Turborepo)
-- **orm/db:** `mongo` (Mongoose) or `drizzle-postgres`
+Paths describe decisions from broadest to most specific:
 
-The single-app Next.js modular monolith uses the explicit name `next-fullstack-drizzle-postgres`.
+```text
+domain → architecture or auth provider → ORM/database
+```
 
-## Starters
+- **Domain:** `nextjs`, `rest`, `trpc`, or `saas`
+- **Architecture:** `standalone` or `turborepo`
+- **Auth provider:** `custom`, `clerk`, `better-auth`, `authjs`, or `supabase`
+- **Persistence:** `drizzle-postgres` or `mongoose-mongodb`
 
-| Folder | Transport | Layout | Persistence |
+`standalone` contains independent frontend and backend pnpm projects. `turborepo` contains a pnpm workspace orchestrated by Turborepo.
+
+## Next.js starters
+
+| Folder | Authentication | Persistence | Status |
 |---|---|---|---|
-| [`rest-apps-mongo`](rest-apps-mongo) | REST | Independent apps | MongoDB + Mongoose |
-| [`rest-apps-drizzle-postgres`](rest-apps-drizzle-postgres) | REST | Independent apps | PostgreSQL + Drizzle |
-| [`rest-workspace-mongo`](rest-workspace-mongo) | REST | pnpm workspace | MongoDB + Mongoose |
-| [`rest-workspace-drizzle-postgres`](rest-workspace-drizzle-postgres) | REST | pnpm workspace | PostgreSQL + Drizzle |
-| [`trpc-workspace-mongo`](trpc-workspace-mongo) | tRPC | pnpm workspace | MongoDB + Mongoose |
-| [`trpc-workspace-drizzle-postgres`](trpc-workspace-drizzle-postgres) | tRPC | pnpm workspace | PostgreSQL + Drizzle |
-| [`next-fullstack-drizzle-postgres`](next-fullstack-drizzle-postgres) | Next.js Route Handlers | Single full-stack app | PostgreSQL + Drizzle |
-| [`saas-trpc-workspace-drizzle-postgres`](saas-trpc-workspace-drizzle-postgres) | tRPC | pnpm workspace | PostgreSQL + Drizzle (SaaS: orgs + Stripe) |
+| [`nextjs/custom/drizzle-postgres`](nextjs/custom/drizzle-postgres) | Custom email/password + Google OAuth | PostgreSQL + Drizzle | Available |
+| [`nextjs/clerk/drizzle-postgres`](nextjs/clerk/drizzle-postgres) | Clerk | PostgreSQL + Drizzle | In development |
+| [`nextjs/better-auth/drizzle-postgres`](nextjs/better-auth/drizzle-postgres) | Better Auth | PostgreSQL + Drizzle | Planned |
+| [`nextjs/authjs/drizzle-postgres`](nextjs/authjs/drizzle-postgres) | Auth.js | PostgreSQL + Drizzle | Planned |
+| [`nextjs/supabase`](nextjs/supabase) | Supabase Auth | Supabase PostgreSQL | Planned |
 
-SaaS variants (same product: orgs, memberships, Stripe, org-scoped todos) live under [`saas-kits/`](saas-kits):
+## REST starters
 
-| Folder | Transport | Layout | Persistence |
+| Folder | Architecture | Persistence |
+|---|---|---|
+| [`rest/standalone/drizzle-postgres`](rest/standalone/drizzle-postgres) | Independent frontend/backend | PostgreSQL + Drizzle |
+| [`rest/standalone/mongoose-mongodb`](rest/standalone/mongoose-mongodb) | Independent frontend/backend | MongoDB + Mongoose |
+| [`rest/turborepo/drizzle-postgres`](rest/turborepo/drizzle-postgres) | pnpm workspace + Turborepo | PostgreSQL + Drizzle |
+| [`rest/turborepo/mongoose-mongodb`](rest/turborepo/mongoose-mongodb) | pnpm workspace + Turborepo | MongoDB + Mongoose |
+
+## tRPC starters
+
+| Folder | Architecture | Persistence |
+|---|---|---|
+| [`trpc/turborepo/drizzle-postgres`](trpc/turborepo/drizzle-postgres) | pnpm workspace + Turborepo | PostgreSQL + Drizzle |
+| [`trpc/turborepo/mongoose-mongodb`](trpc/turborepo/mongoose-mongodb) | pnpm workspace + Turborepo | MongoDB + Mongoose |
+
+## SaaS starters
+
+SaaS variants add organizations, memberships, Stripe billing, and organization-scoped todos to the authentication base.
+
+| Folder | API | Architecture | Persistence |
 |---|---|---|---|
-| [`saas-kits/saas-trpc-workspace-mongo`](saas-kits/saas-trpc-workspace-mongo) | tRPC | pnpm workspace | MongoDB + Mongoose |
-| [`saas-kits/saas-workspace-mongo`](saas-kits/saas-workspace-mongo) | REST | pnpm workspace | MongoDB + Mongoose |
-| [`saas-kits/saas-workspace-drizzle-postgres`](saas-kits/saas-workspace-drizzle-postgres) | REST | pnpm workspace | PostgreSQL + Drizzle |
-| [`saas-kits/saas-rest-apps-mongo`](saas-kits/saas-rest-apps-mongo) | REST | Independent apps | MongoDB + Mongoose |
-| [`saas-kits/saas-rest-apps-drizzle-postgres`](saas-kits/saas-rest-apps-drizzle-postgres) | REST | Independent apps | PostgreSQL + Drizzle |
+| [`saas/rest/standalone/drizzle-postgres`](saas/rest/standalone/drizzle-postgres) | REST | Independent frontend/backend | PostgreSQL + Drizzle |
+| [`saas/rest/standalone/mongoose-mongodb`](saas/rest/standalone/mongoose-mongodb) | REST | Independent frontend/backend | MongoDB + Mongoose |
+| [`saas/rest/turborepo/drizzle-postgres`](saas/rest/turborepo/drizzle-postgres) | REST | pnpm workspace + Turborepo | PostgreSQL + Drizzle |
+| [`saas/rest/turborepo/mongoose-mongodb`](saas/rest/turborepo/mongoose-mongodb) | REST | pnpm workspace + Turborepo | MongoDB + Mongoose |
+| [`saas/trpc/turborepo/drizzle-postgres`](saas/trpc/turborepo/drizzle-postgres) | tRPC | pnpm workspace + Turborepo | PostgreSQL + Drizzle |
+| [`saas/trpc/turborepo/mongoose-mongodb`](saas/trpc/turborepo/mongoose-mongodb) | tRPC | pnpm workspace + Turborepo | MongoDB + Mongoose |
 
-Each folder is a complete starter, not its own git repository. Auth product is the same in every kit: email/password + Google OAuth, httpOnly access + rotating refresh cookies. SaaS kits add organizations, memberships, and Stripe billing on that auth base.
+Each leaf folder is a complete starter, not its own Git repository. Follow the README inside the selected starter.
 
 ## Use a starter
 
 ```bash
 git clone <this-repo>
-cp -R trpc-workspace-mongo ../my-app
+cp -R starters-with-auth/trpc/turborepo/mongoose-mongodb ../my-app
 cd ../my-app
 ```
-
-Then follow that starter's README.
