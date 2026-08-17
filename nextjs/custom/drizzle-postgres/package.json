@@ -59,15 +59,5 @@
     "vitest": "^4.1.10"
   },
   "packageManager": "pnpm@11.5.2",
-  "engines": { "node": ">=20" },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "argon2",
-      "cpu-features",
-      "esbuild",
-      "protobufjs",
-      "ssh2",
-      "unrs-resolver"
-    ]
-  }
+  "engines": { "node": ">=20" }
 }
