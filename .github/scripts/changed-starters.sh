@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 #
-# Prints a JSON array of starter roots that need verifying, for use as a
+# Prints a JSON array of REST starter roots that need verifying, for use as a
 # GitHub Actions matrix.
 #
-# A "starter root" is any directory holding its own pnpm-lock.yaml. That covers
-# all three layouts in this repo without a hardcoded list:
-#   - single Next.js app        nextjs/custom/drizzle-postgres
-#   - pnpm/turborepo workspace  trpc/turborepo/drizzle-postgres
+# A "starter root" is a REST directory holding its own pnpm-lock.yaml. That
+# covers both REST layouts in this repo without a hardcoded kit list:
+#   - pnpm/turborepo workspace  rest/turborepo/drizzle-postgres
 #   - independent apps          rest/standalone/drizzle-postgres/{backend,frontend}
 #
 # Everything is selected when the diff is unknown, when CI's own files changed,
@@ -26,6 +25,7 @@ cd "$(git rev-parse --show-toplevel)"
 mapfile -t roots < <(
   find . -name pnpm-lock.yaml -not -path '*/node_modules/*' -printf '%h\n' |
     sed 's|^\./||' |
+    grep -E '^(rest|saas/rest)/' |
     sort -u
 )
 
