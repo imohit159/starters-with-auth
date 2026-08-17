@@ -1,23 +1,38 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "saas.activeOrganizationId";
+const ACTIVE_ORG_EVENT = "saas:active-organization-change";
+
+function subscribe(onStoreChange: () => void) {
+  window.addEventListener("storage", onStoreChange);
+  window.addEventListener(ACTIVE_ORG_EVENT, onStoreChange);
+
+  return () => {
+    window.removeEventListener("storage", onStoreChange);
+    window.removeEventListener(ACTIVE_ORG_EVENT, onStoreChange);
+  };
+}
+
+function getSnapshot() {
+  return window.localStorage.getItem(STORAGE_KEY);
+}
+
+function getServerSnapshot() {
+  return null;
+}
 
 export function useActiveOrg() {
-  const [organizationId, setOrganizationIdState] = useState<string | null>(null);
-
-  useEffect(() => {
-    setOrganizationIdState(window.localStorage.getItem(STORAGE_KEY));
-  }, []);
+  const organizationId = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   const setOrganizationId = useCallback((id: string | null) => {
-    setOrganizationIdState(id);
     if (id) {
       window.localStorage.setItem(STORAGE_KEY, id);
-      return;
+    } else {
+      window.localStorage.removeItem(STORAGE_KEY);
     }
-    window.localStorage.removeItem(STORAGE_KEY);
+    window.dispatchEvent(new Event(ACTIVE_ORG_EVENT));
   }, []);
 
   return { organizationId, setOrganizationId };
