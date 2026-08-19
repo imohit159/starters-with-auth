@@ -25,8 +25,8 @@ domain → architecture or auth provider → ORM/database
 |---|---|---|---|
 | [`nextjs/custom/drizzle-postgres`](nextjs/custom/drizzle-postgres) | Custom email/password + Google OAuth | PostgreSQL + Drizzle | Available |
 | [`nextjs/clerk/drizzle-postgres`](nextjs/clerk/drizzle-postgres) | Clerk | PostgreSQL + Drizzle | In development |
-| [`nextjs/better-auth/drizzle-postgres`](nextjs/better-auth/drizzle-postgres) | Better Auth | PostgreSQL + Drizzle | Planned |
-| [`nextjs/authjs/drizzle-postgres`](nextjs/authjs/drizzle-postgres) | Auth.js | PostgreSQL + Drizzle | Planned |
+| [`nextjs/better-auth/drizzle-postgres`](nextjs/better-auth/drizzle-postgres) | Better Auth | PostgreSQL + Drizzle | Available |
+| [`nextjs/authjs/drizzle-postgres`](nextjs/authjs/drizzle-postgres) | Auth.js | PostgreSQL + Drizzle | Available |
 | [`nextjs/supabase`](nextjs/supabase) | Supabase Auth | Supabase PostgreSQL | Planned |
 
 ## REST starters
